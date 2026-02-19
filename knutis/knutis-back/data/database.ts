@@ -9,7 +9,7 @@ db.prepare(`
         title TEXT NOT NULL,
         date TEXT,
         location TEXT,
-        description TEXT,
+        description TEXT
         )
     `).run();
 
@@ -24,6 +24,6 @@ db.prepare(`
     allergens TEXT,
     FOREIGN KEY (potluck_id) REFERENCES potlucks(id)
     )
-    `)
+    `).run();
 
 export default db;
