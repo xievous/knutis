@@ -37,6 +37,25 @@ app.post("/api/potlucks", (req, res) => {
     });
 });
 
+/* Add dish to potluck */
+app.post("/api/potlucks/:id/dishes", (req, res) => {
+    const potluckId = req.params.id;
+    const { name, details, type, allergens } = req.body;
+
+    if(!name) {
+        return res.status(400).json({ error: "Dish name required"});
+    }
+
+    const result = db.prepare(`
+        INSERT INTO dishes (potluck_id, name, details, type, allergens)
+        VALUES (?, ?, ?, ?, ?)    
+    `).run(potluckId, name, details, type, allergens);
+
+    res.json({
+        message: "Dish added",
+        dishId: result.lastInsertRowid
+    })
+})
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
