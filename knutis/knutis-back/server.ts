@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import "./data/database.js";
 import db from "./data/database.js";
 
 const app = express();
@@ -55,7 +54,30 @@ app.post("/api/potlucks/:id/dishes", (req, res) => {
         message: "Dish added",
         dishId: result.lastInsertRowid
     })
-})
+});
+
+/* Get full potluck with dishes */
+app.get("/api/potlucks/:id", (req, res) => {
+    console.log("Route hit!")
+    const potluckId = req.params.id;
+
+    const potluck = db.prepare(`
+        SELECT * FROM potlucks WHERE id = ?
+    `).get(potluckId);
+
+    if (!potluck) {
+        return res.status(404).json({ error: "Potluck not found" });
+    }
+
+    const dishes = db.prepare(`
+        SELECT * FROM dishes WHERE potluck_id = ?
+    `).all(potluckId);
+
+    res.json({
+        ...potluck,
+        dishes
+    });
+});
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
