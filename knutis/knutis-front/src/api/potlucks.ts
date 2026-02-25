@@ -1,8 +1,9 @@
-import type { Dish, Potluck } from "../types/potluck"
+import type { Dish, Potluck, CreatePotluckResponse } from "../types/potluck"
+
 
 const API = "http://localhost:3000/api"
 
-export async function createPotluck(data: Potluck) {
+export async function createPotluck(data: Potluck): Promise<CreatePotluckResponse> {
     const res = await fetch(`${API}/potlucks`, {
         method: "POST",
         headers: {

@@ -14,3 +14,8 @@ export type Potluck = {
     description?: string
     dishes?: Dish[]
 }
+
+export type CreatePotluckResponse = {
+  message: string
+  potluckId: number
+}
