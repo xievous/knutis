@@ -1,11 +1,11 @@
 import { useState } from "react"
 import { Box, Button, Divider, FormControlLabel, Radio, RadioGroup, TextField, Typography } from "@mui/material";
 import { type Potluck, type Dish } from "../types/potluck";
-import { createPotluck, addDish } from "../api/potlucks";
+import { createPotluck, addDish, getPotluck } from "../api/potlucks";
 export default function CreatePotluck() {  
 
 const [step, setStep] = useState(1)
-
+const [reviewData, setReviewData] = useState<Potluck | null>(null)
 const [form, setForm] = useState<Potluck>({
     title: "",
     date: "",
@@ -59,6 +59,15 @@ const [form, setForm] = useState<Potluck>({
         allergens: ""
     })
   }
+
+  const handleReview = async () => {
+    if (!potluckId) return
+
+    const data = await getPotluck(potluckId)
+    setReviewData(data)
+    setStep(3)
+  }
+
 if (step === 1) {
     return (
    <Box display="flex" flexDirection="column" gap={2}>
@@ -98,6 +107,7 @@ if (step === 1) {
    </Box>
   )
 }
+if(step === 2) {
 return (
     <Box display="flex" flexDirection="column" gap={2}>
         <Typography variant="h6">Add Dishes</Typography>
@@ -150,10 +160,42 @@ return (
 
         <Box display="flex" justifyContent="space-between" mt={2}>
             <Button onClick={() => setStep(1)}>Back</Button>
-            <Button variant="contained">
+            <Button variant="contained" onClick={handleReview}>
                 Review
             </Button>
         </Box>
     </Box>
 )
+}
+
+if(step === 3 && reviewData) {
+    return (
+        <Box display="flex" flexDirection="column" gap={2}>
+            <Typography variant="h5">{reviewData.title}</Typography>
+            <Typography>Date: {reviewData.date}</Typography>
+            <Typography>Location: {reviewData.location}</Typography>
+            <Typography>{reviewData.description}</Typography>
+
+            <Divider/>
+
+            <Typography variant="h6">Dishes</Typography>
+            {reviewData.dishes?.map((dish) => (
+                <Box key={dish.id} sx={{border: "1px solid #ccc", p: 2}}>
+                    <Typography fontWeight="bold">
+                        {dish.name} - {dish.type}
+                    </Typography>
+                    <Typography>{dish.details}</Typography>
+                    <Typography>Allergens: {dish.allergens}</Typography>
+                </Box>
+            ))}
+
+            <Box display="flex" justifyContent="space-between">
+                <Button onClick={() => setStep(2)}>Back</Button>
+                <Button variant="contained" color="success">
+                    Finalize
+                </Button>
+            </Box>
+        </Box>
+    )
+}
 }
