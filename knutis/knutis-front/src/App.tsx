@@ -1,19 +1,14 @@
-import { useEffect, useState } from "react";
 import { Container, Typography } from "@mui/material";
+import CreatePotluck from "./pages/CreatePotluck";
 
 export default function App() {
-  const [msg, setMsg] = useState("");
-
-  useEffect(() => {
-    fetch("/api/test")
-      .then(res => res.json())
-      .then(data => setMsg(data.message));
-  }, []);
 
   return (
-    <Container>
-      <Typography variant="h4">Knutis Potluck</Typography>
-      <Typography>{msg}</Typography>
+    <Container maxWidth="sm">
+      <Typography variant="h4" sx={{mt:4, mb:4}}>Knutis Potluck</Typography>
+      <Typography>
+        <CreatePotluck/>
+      </Typography>
     </Container>
   );
 }
