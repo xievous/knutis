@@ -1,32 +1,22 @@
 import type { Dish, Potluck, CreatePotluckResponse } from "../types/potluck"
 
-
 const API = "http://localhost:3000/api"
 
-export async function createPotluck(data: Potluck): Promise<CreatePotluckResponse> {
-    const res = await fetch(`${API}/potlucks`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-    })
-    return res.json()
-}
+export async function createFullPotluck(
+  data: Potluck,
+  dishes: Dish[]
+): Promise<CreatePotluckResponse> {
+  const res = await fetch(`${API}/potlucks/full`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ ...data, dishes }),
+  })
 
-export async function addDish(potluckId: number, dish: Dish) {
-    const res = await fetch(`${API}/potlucks/${potluckId}/dishes`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(dish)
-    }) 
-    return res.json()
-}
+  if (!res.ok) {
+    throw new Error("Failed to create potluck")
+  }
 
-export async function getPotluck(id: number) {
-    const res = await fetch(`${API}/potlucks/${id}`)
-    return res.json()
+  return res.json()
 }
-
