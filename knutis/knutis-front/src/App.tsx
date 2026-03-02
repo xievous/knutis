@@ -2,9 +2,8 @@
 import CreatePotluck from "./pages/CreatePotluck";
 */
 
-import Home from "./pages/Home"
+import Home from "./pages/Home";
 export default function App() {
-
   return (
     <Home />
     /* 
@@ -15,5 +14,5 @@ export default function App() {
       </Typography>
     </Container>
     */
-  )
+  );
 }
