@@ -192,7 +192,7 @@ if(step === 3 && reviewData) {
             <Box display="flex" justifyContent="space-between">
                 <Button onClick={() => setStep(2)}>Back</Button>
                 <Button variant="contained" color="success" onClick={() => {
-                    alert("Potluck finalized, potluck id: ")
+                    alert("Potluck finalized")
 
                     setStep(1)
                     setPotluckId(null)

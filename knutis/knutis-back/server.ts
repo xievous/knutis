@@ -58,7 +58,6 @@ app.post("/api/potlucks/:id/dishes", (req, res) => {
 
 /* Get full potluck with dishes */
 app.get("/api/potlucks/:id", (req, res) => {
-    console.log("Route hit!")
     const potluckId = req.params.id;
 
     const potluck = db.prepare(`
@@ -81,4 +80,14 @@ app.get("/api/potlucks/:id", (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
+})
+
+/* Get all potlucks */
+app.get("/api/potlucks", (req, res) => {
+    const potlucks = db.prepare(`
+        SELECT * FROM potlucks
+        ORDER BY id DESC    
+    `).all()
+
+    res.json(potlucks)
 })
