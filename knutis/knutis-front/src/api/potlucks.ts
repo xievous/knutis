@@ -30,3 +30,12 @@ export async function getPotluck(id: number) {
     return res.json()
 }
 
+export async function getAllPotlucks(): Promise<Potluck[]> {
+    const res = await fetch(`${API}/potlucks`)
+
+    if(!res.ok) {
+        throw new Error("Failed to fetch potlucks")
+    }
+
+    return res.json()
+}
