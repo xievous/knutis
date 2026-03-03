@@ -19,9 +19,17 @@ export default function Home() {
 
   return (
     <Box>
-      <Box>
-        <Typography variant="h4">All Potlucks</Typography>
-        <Button variant="contained" onClick={() => navigate("/create")}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        sx={{ marginTop: "10px", marginBottom: "10px" }}
+      >
+        <Typography variant="h4">Knutis</Typography>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => navigate("/create")}
+        >
           Create Potluck
         </Button>
       </Box>
