@@ -1,18 +1,14 @@
-/*import { Container, Typography } from "@mui/material";
-import CreatePotluck from "./pages/CreatePotluck";
-*/
-
+import { Routes, Route } from "react-router";
 import Home from "./pages/Home";
-export default function App() {
+import CreatePotluck from "./pages/CreatePotluck";
+
+function App() {
   return (
-    <Home />
-    /* 
-    <Container maxWidth="sm">
-      <Typography variant="h4" sx={{mt:4, mb:4}}>Knutis Potluck</Typography>
-      <Typography>
-        <CreatePotluck/>
-      </Typography>
-    </Container>
-    */
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/create" element={<CreatePotluck />} />
+    </Routes>
   );
 }
+
+export default App;

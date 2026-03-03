@@ -1,9 +1,12 @@
+import { useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import { getAllPotlucks } from "../api/potlucks";
 import { type Potluck } from "../types/potluck";
 
 export default function Home() {
+  const navigate = useNavigate();
+
   const [potlucks, setPotlucks] = useState<Potluck[]>([]);
 
   useEffect(() => {
@@ -18,7 +21,9 @@ export default function Home() {
     <Box>
       <Box>
         <Typography variant="h4">All Potlucks</Typography>
-        <Button>Create Potluck</Button>
+        <Button variant="contained" onClick={() => navigate("/create")}>
+          Create Potluck
+        </Button>
       </Box>
       <Box
         sx={{
