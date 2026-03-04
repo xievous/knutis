@@ -41,7 +41,11 @@ export default function Home() {
         }}
       >
         {potlucks.map((potluck) => (
-          <Card key={potluck.id}>
+          <Card
+            key={potluck.id}
+            sx={{ cursor: "pointer" }}
+            onClick={() => navigate(`/potluck/${potluck.id}`)}
+          >
             <CardContent>
               <Typography variant="h6">{potluck.title}</Typography>
               <Typography>Date: {potluck.date}</Typography>
