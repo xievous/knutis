@@ -110,3 +110,40 @@ app.get("/api/potlucks", (req, res) => {
 
   res.json(potlucks);
 });
+
+/* Delete potluck */
+app.delete("/api/potlucks/:id", (req, res) => {
+  const potluckId = req.params.id;
+
+  const transaction = db.transaction(() => {
+    db.prepare(
+      `
+      DELETE FROM dishes WHERE potluck_id = ?
+    `,
+    ).run(potluckId);
+
+    // Delete potluck
+    const result = db
+      .prepare(
+        `
+      DELETE FROM potlucks WHERE id = ?
+    `,
+      )
+      .run(potluckId);
+
+    return result.changes;
+  });
+
+  try {
+    const changes = transaction();
+
+    if (changes === 0) {
+      return res.status(404).json({ error: "Potluck not found" });
+    }
+
+    res.json({ message: "Potluck deleted" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Delete failed" });
+  }
+});

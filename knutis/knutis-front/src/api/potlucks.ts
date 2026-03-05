@@ -40,3 +40,13 @@ export async function getAllPotlucks(): Promise<Potluck[]> {
 
   return res.json();
 }
+
+export async function deletePotluck(id: number): Promise<void> {
+  const res = await fetch(`${API}/potlucks/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) {
+    throw new Error("Delete Potluck Failed.");
+  }
+}
