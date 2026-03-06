@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
+import ClearIcon from "@mui/icons-material/Clear";
 import { deletePotluck, getAllPotlucks } from "../api/potlucks";
 import { type Potluck } from "../types/potluck";
 
@@ -47,36 +48,34 @@ export default function Home() {
             onClick={() => navigate(`/potluck/${potluck.id}`)}
           >
             <CardContent>
-              <Typography variant="h6">{potluck.title}</Typography>
+              <Box display="flex" justifyContent="space-between">
+                <Typography variant="h6">{potluck.title}</Typography>
+                <Button
+                  color="error"
+                  size="small"
+                  onClick={async (e) => {
+                    e.stopPropagation(); // prevent card click navigation
+
+                    if (!potluck.id) return;
+
+                    if (
+                      confirm("Are you sure you want to delete this potluck?")
+                    ) {
+                      await deletePotluck(potluck.id);
+
+                      // Remove from state immediately
+                      setPotlucks((prev) =>
+                        prev.filter((p) => p.id !== potluck.id),
+                      );
+                    }
+                  }}
+                >
+                  <ClearIcon />
+                </Button>
+              </Box>
+
               <Typography>Date: {potluck.date}</Typography>
               <Typography>Location: {potluck.location}</Typography>
-
-              <Button
-                color="error"
-                variant="outlined"
-                size="small"
-                sx={{
-                  mt: 1,
-                }}
-                onClick={async (e) => {
-                  e.stopPropagation(); // prevent card click navigation
-
-                  if (!potluck.id) return;
-
-                  if (
-                    confirm("Are you sure you want to delete this potluck?")
-                  ) {
-                    await deletePotluck(potluck.id);
-
-                    // Remove from state immediately
-                    setPotlucks((prev) =>
-                      prev.filter((p) => p.id !== potluck.id),
-                    );
-                  }
-                }}
-              >
-                Delete
-              </Button>
             </CardContent>
           </Card>
         ))}
