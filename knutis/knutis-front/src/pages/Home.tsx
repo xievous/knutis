@@ -51,7 +51,7 @@ export default function Home() {
               <Box display="flex" justifyContent="space-between">
                 <Typography variant="h6">{potluck.title}</Typography>
                 <Button
-                  color="error"
+                  color="secondary"
                   size="small"
                   onClick={async (e) => {
                     e.stopPropagation(); // prevent card click navigation
