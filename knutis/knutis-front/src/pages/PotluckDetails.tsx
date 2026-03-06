@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { type Potluck } from "../types/potluck";
 import { getPotluck } from "../api/potlucks";
-import { Box, Card, CardContent, Divider, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Divider,
+  Typography,
+} from "@mui/material";
 
 export default function PotluckDetails() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [potluck, setPotluck] = useState<Potluck | null>(null);
 
@@ -27,7 +35,19 @@ export default function PotluckDetails() {
         gap: 2,
       }}
     >
-      <Typography>{potluck.title}</Typography>
+      <Box display="flex" flexDirection="row" justifyContent="space-between">
+        <Typography>{potluck.title}</Typography>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => {
+            navigate("/");
+          }}
+        >
+          Back
+        </Button>
+      </Box>
+
       <Typography>{potluck.date}</Typography>
       <Typography>{potluck.location}</Typography>
       <Typography>{potluck.description}</Typography>
