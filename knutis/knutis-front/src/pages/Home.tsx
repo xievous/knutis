@@ -52,10 +52,10 @@ export default function Home() {
               <Typography>Location: {potluck.location}</Typography>
 
               <Button
+                color="error"
+                variant="outlined"
+                size="small"
                 sx={{
-                  variant: "outlined",
-                  color: "error",
-                  size: "small",
                   mt: 1,
                 }}
                 onClick={async (e) => {
