@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
-import { getAllPotlucks } from "../api/potlucks";
+import { deletePotluck, getAllPotlucks } from "../api/potlucks";
 import { type Potluck } from "../types/potluck";
 
 export default function Home() {
@@ -43,13 +43,40 @@ export default function Home() {
         {potlucks.map((potluck) => (
           <Card
             key={potluck.id}
-            sx={{ cursor: "pointer" }}
+            sx={{ cursor: "pointer", position: "relative" }}
             onClick={() => navigate(`/potluck/${potluck.id}`)}
           >
             <CardContent>
               <Typography variant="h6">{potluck.title}</Typography>
               <Typography>Date: {potluck.date}</Typography>
               <Typography>Location: {potluck.location}</Typography>
+
+              <Button
+                sx={{
+                  variant: "outlined",
+                  color: "error",
+                  size: "small",
+                  mt: 1,
+                }}
+                onClick={async (e) => {
+                  e.stopPropagation(); // prevent card click navigation
+
+                  if (!potluck.id) return;
+
+                  if (
+                    confirm("Are you sure you want to delete this potluck?")
+                  ) {
+                    await deletePotluck(potluck.id);
+
+                    // Remove from state immediately
+                    setPotlucks((prev) =>
+                      prev.filter((p) => p.id !== potluck.id),
+                    );
+                  }
+                }}
+              >
+                Delete
+              </Button>
             </CardContent>
           </Card>
         ))}
