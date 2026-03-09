@@ -147,3 +147,52 @@ app.delete("/api/potlucks/:id", (req, res) => {
     res.status(500).json({ error: "Delete failed" });
   }
 });
+
+/* Edit potluck */
+app.put("/api/potlucks/:id", (req, res) => {
+  const { id } = req.params;
+  const { title, date, location, description } = req.body;
+
+  const result = db
+    .prepare(
+      `
+      UPDATE potlucks
+      SET title = ?, date = ?, location = ?, description = ?
+      WHERE id = ?
+    `,
+    )
+    .run(title, date, location, description, id);
+
+  if (result.changes === 0) {
+    return res.status(404).json({ error: "Potluck not found" });
+  }
+
+  res.json({ message: "Potluck updated" });
+});
+
+/* Update Dish */
+app.put("/api/dishes/:id", (req, res) => {
+  const { id } = req.params;
+  const { name, type, details, allergens } = req.body;
+
+  const result = db
+    .prepare(
+      `
+      UPDATE dishes
+      SET name = ?, type = ?, details = ?, allergens = ?
+      WHERE id = ?
+    `,
+    )
+    .run(name, type, details, allergens, id);
+
+  res.json({ message: "Dish updated" });
+});
+
+/* Delete dish in potluck */
+app.delete("/api/dishes/:id", (req, res) => {
+  const { id } = req.params;
+
+  db.prepare(`DELETE FROM dishes WHERE id = ?`).run(id);
+
+  res.json({ message: "Dish deleted" });
+});
