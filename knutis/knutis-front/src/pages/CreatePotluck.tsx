@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { type Potluck, type Dish } from "../types/potluck";
-import { createPotluck, addDish, getPotluck } from "../api/potlucks";
+import { createPotluck, addDish, getPotluck, updatePotluck } from "../api/potlucks";
 import { useNavigate } from "react-router";
 export default function CreatePotluck() {
   const [step, setStep] = useState(1);
@@ -43,8 +43,15 @@ export default function CreatePotluck() {
     });
   };
 
-  const handleCreatePotluck = async () => {
+  const handleCreateOrUpdatePotluck = async () => {
     if (!form.title) return alert("Title required");
+
+    // If we already created a potluck, update it instead of creating a new one
+    if (potluckId) {
+      await updatePotluck(potluckId, form);
+      setStep(2);
+      return;
+    }
 
     const result = await createPotluck(form);
     setPotluckId(result.potluckId);
@@ -113,7 +120,7 @@ export default function CreatePotluck() {
           onChange={handlePotluckChange}
         />
 
-        <Button variant="contained" onClick={handleCreatePotluck}>
+        <Button variant="contained" onClick={handleCreateOrUpdatePotluck}>
           Continue
         </Button>
       </Box>
