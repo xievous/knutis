@@ -39,16 +39,26 @@ export default function PotluckDetails() {
       }}
     >
       <Box display="flex" flexDirection="row" justifyContent="space-between">
-        <Typography>{potluck.title}</Typography>
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={() => {
-            navigate("/");
-          }}
-        >
-          Back
-        </Button>
+        <Box>
+          <Typography>{potluck.title}</Typography>
+        </Box>
+
+        <Box>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => navigate("/edit/$potluck.id")}
+          >
+            Edit
+          </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => navigate("/")}
+          >
+            Back
+          </Button>
+        </Box>
       </Box>
 
       <Typography>{potluck.date}</Typography>
