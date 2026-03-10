@@ -31,6 +31,20 @@ export async function getPotluck(id: number) {
   return res.json();
 }
 
+export async function updatePotluck(id: number, data: Potluck): Promise<void> {
+  const res = await fetch(`${API}/potlucks/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to update potluck");
+  }
+}
+
 export async function getAllPotlucks(): Promise<Potluck[]> {
   const res = await fetch(`${API}/potlucks`);
 

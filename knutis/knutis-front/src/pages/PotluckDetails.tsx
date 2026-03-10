@@ -47,7 +47,7 @@ export default function PotluckDetails() {
           <Button
             variant="outlined"
             color="secondary"
-            onClick={() => navigate("/edit/$potluck.id")}
+            onClick={() => navigate(`/edit/${potluck.id}`)}
           >
             Edit
           </Button>
