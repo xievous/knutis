@@ -93,10 +93,6 @@ app.get("/api/potlucks/:id", (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
-
 /* Get all potlucks */
 app.get("/api/potlucks", (req, res) => {
   const potlucks = db
@@ -185,6 +181,10 @@ app.put("/api/dishes/:id", (req, res) => {
     )
     .run(name, type, details, allergens, id);
 
+  if (result.changes === 0) {
+    return res.status(404).json({ error: "Dish not found" });
+  }
+
   res.json({ message: "Dish updated" });
 });
 
@@ -192,7 +192,28 @@ app.put("/api/dishes/:id", (req, res) => {
 app.delete("/api/dishes/:id", (req, res) => {
   const { id } = req.params;
 
-  db.prepare(`DELETE FROM dishes WHERE id = ?`).run(id);
+  const result = db.prepare(`DELETE FROM dishes WHERE id = ?`).run(id);
+
+  if (result.changes === 0) {
+    return res.status(404).json({ error: "Dish not found" });
+  }
 
   res.json({ message: "Dish deleted" });
+});
+
+/* Global error handler */
+app.use(
+  (
+    err: unknown,
+    _req: express.Request,
+    res: express.Response,
+    _next: express.NextFunction,
+  ) => {
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  },
+);
+
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });

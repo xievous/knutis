@@ -2,6 +2,10 @@ import Database from "better-sqlite3";
 
 const db = new Database("data/knutis.db");
 
+// Foreign key enforcement is off by default in SQLite and must be enabled
+// per connection so ON DELETE CASCADE actually fires.
+db.pragma("foreign_keys = ON");
+
 /* Potluck table */
 db.prepare(`
         CREATE TABLE IF NOT EXISTS potlucks (
@@ -22,7 +26,7 @@ db.prepare(`
     details TEXT,
     type TEXT,
     allergens TEXT,
-    FOREIGN KEY (potluck_id) REFERENCES potlucks(id)
+    FOREIGN KEY (potluck_id) REFERENCES potlucks(id) ON DELETE CASCADE
     )
     `).run();
 

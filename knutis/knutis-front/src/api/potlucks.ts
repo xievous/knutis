@@ -1,6 +1,6 @@
 import type { Dish, Potluck, CreatePotluckResponse } from "../types/potluck";
 
-const API = "http://localhost:3000/api";
+const API = import.meta.env.VITE_API_URL ?? "http://localhost:3000/api";
 
 export async function createPotluck(
   data: Potluck,
@@ -12,6 +12,11 @@ export async function createPotluck(
     },
     body: JSON.stringify(data),
   });
+
+  if (!res.ok) {
+    throw new Error("Failed to create potluck");
+  }
+
   return res.json();
 }
 
@@ -23,11 +28,21 @@ export async function addDish(potluckId: number, dish: Dish) {
     },
     body: JSON.stringify(dish),
   });
+
+  if (!res.ok) {
+    throw new Error("Failed to add dish");
+  }
+
   return res.json();
 }
 
 export async function getPotluck(id: number) {
   const res = await fetch(`${API}/potlucks/${id}`);
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch potluck");
+  }
+
   return res.json();
 }
 
