@@ -2,16 +2,24 @@ import { useState } from "react";
 import {
   Box,
   Button,
+  Card,
+  CardContent,
   Divider,
   FormControlLabel,
+  IconButton,
   Radio,
   RadioGroup,
+  Step,
+  StepLabel,
+  Stepper,
   TextField,
   Typography,
 } from "@mui/material";
+import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import { type Potluck, type Dish } from "../types/potluck";
 import { createPotluck, addDish } from "../api/potlucks";
 import { useNavigate } from "react-router";
+import DishTypeChip from "../components/DishTypeChip";
 
 // Dishes are kept in local state until the user finalizes, so we attach a
 // stable client-side id to use as the React key instead of the array index.
@@ -23,6 +31,8 @@ const emptyDishForm: Dish = {
   type: "meat",
   allergens: "",
 };
+
+const steps = ["Details", "Dishes", "Review"];
 
 export default function CreatePotluck() {
   const [step, setStep] = useState(1);
@@ -107,170 +117,255 @@ export default function CreatePotluck() {
     }
   };
 
-  if (step === 1) {
-    return (
-      <Box display="flex" flexDirection="column" gap={2}>
-        <TextField
-          label="Title"
-          name="title"
-          value={form.title}
-          onChange={handlePotluckChange}
-          required
-          error={titleError}
-          helperText={titleError ? "Title is required" : ""}
-        />
-        <TextField
-          label="Date"
-          type="date"
-          name="date"
-          value={form.date}
-          onChange={handlePotluckChange}
-          InputLabelProps={{ shrink: true }}
-        />
-        <TextField
-          label="Location"
-          name="location"
-          value={form.location}
-          onChange={handlePotluckChange}
-        />
-        <TextField
-          label="Description"
-          name="description"
-          multiline
-          rows={3}
-          value={form.description}
-          onChange={handlePotluckChange}
-        />
+  return (
+    <Box sx={{ maxWidth: 620, mx: "auto" }}>
+      <Typography variant="overline" color="primary">
+        New potluck
+      </Typography>
+      <Typography variant="h3" sx={{ mt: 0.5, mb: 3 }}>
+        {step === 1 && "The basics"}
+        {step === 2 && "What's on the table?"}
+        {step === 3 && "Look it over"}
+      </Typography>
 
-        <Button variant="contained" onClick={handleContinue}>
-          Continue
-        </Button>
-      </Box>
-    );
-  }
+      <Stepper activeStep={step - 1} sx={{ mb: 4 }}>
+        {steps.map((label) => (
+          <Step key={label}>
+            <StepLabel>{label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
 
-  if (step === 2) {
-    return (
-      <Box display="flex" flexDirection="column" gap={2}>
-        <Typography variant="h6">Add Dishes</Typography>
+      <Card>
+        <CardContent sx={{ p: { xs: 2.5, md: 4 } }}>
+          {step === 1 && (
+            <Box display="flex" flexDirection="column" gap={2.5}>
+              <TextField
+                label="Title"
+                name="title"
+                value={form.title}
+                onChange={handlePotluckChange}
+                required
+                error={titleError}
+                helperText={titleError ? "Title is required" : " "}
+                placeholder="Sunday garden lunch"
+              />
+              <TextField
+                label="Date"
+                type="date"
+                name="date"
+                value={form.date}
+                onChange={handlePotluckChange}
+                InputLabelProps={{ shrink: true }}
+              />
+              <TextField
+                label="Location"
+                name="location"
+                value={form.location}
+                onChange={handlePotluckChange}
+                placeholder="The backyard"
+              />
+              <TextField
+                label="Description"
+                name="description"
+                multiline
+                rows={3}
+                value={form.description}
+                onChange={handlePotluckChange}
+                placeholder="Anything guests should know"
+              />
 
-        <TextField
-          label="Dish Name"
-          name="name"
-          value={dishForm.name}
-          onChange={handleDishChange}
-        />
-
-        <TextField
-          label="Details"
-          name="details"
-          value={dishForm.details}
-          onChange={handleDishChange}
-        />
-
-        <Typography>Type</Typography>
-        <RadioGroup
-          name="type"
-          value={dishForm.type}
-          onChange={handleDishChange}
-        >
-          <FormControlLabel value="meat" control={<Radio />} label="Meat" />
-          <FormControlLabel
-            value="vegetarian"
-            control={<Radio />}
-            label="Vegetarian"
-          />
-          <FormControlLabel value="vegan" control={<Radio />} label="Vegan" />
-        </RadioGroup>
-
-        <TextField
-          label="Allergens"
-          name="allergens"
-          value={dishForm.allergens}
-          onChange={handleDishChange}
-        />
-
-        <Button variant="contained" onClick={handleAddDish}>
-          Add Dish
-        </Button>
-
-        <Divider />
-
-        <Typography variant="subtitle1">Added Dishes:</Typography>
-        {dishes.length === 0 && (
-          <Typography variant="body2">No dishes added yet.</Typography>
-        )}
-        {dishes.map((dish) => (
-          <Box
-            key={dish.clientId}
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Box>
-              <strong>{dish.name}</strong> - {dish.type}
-              <div>{dish.allergens}</div>
+              <Box display="flex" justifyContent="flex-end" mt={1}>
+                <Button variant="contained" onClick={handleContinue}>
+                  Continue
+                </Button>
+              </Box>
             </Box>
-            <Button
-              size="small"
-              color="secondary"
-              onClick={() => handleRemoveDish(dish.clientId)}
-            >
-              Remove
-            </Button>
-          </Box>
-        ))}
+          )}
 
-        <Box display="flex" justifyContent="space-between" mt={2}>
-          <Button onClick={() => setStep(1)}>Back</Button>
-          <Button variant="contained" onClick={() => setStep(3)}>
-            Review
-          </Button>
-        </Box>
-      </Box>
-    );
-  }
+          {step === 2 && (
+            <Box display="flex" flexDirection="column" gap={2.5}>
+              <TextField
+                label="Dish name"
+                name="name"
+                value={dishForm.name}
+                onChange={handleDishChange}
+                placeholder="Roasted carrots"
+              />
+              <TextField
+                label="Details"
+                name="details"
+                value={dishForm.details}
+                onChange={handleDishChange}
+                placeholder="Serves 6, served warm"
+              />
 
-  if (step === 3) {
-    return (
-      <Box display="flex" flexDirection="column" gap={2}>
-        <Typography variant="h5">{form.title}</Typography>
-        <Typography>Date: {form.date}</Typography>
-        <Typography>Location: {form.location}</Typography>
-        <Typography>{form.description}</Typography>
+              <Box>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mb: 0.5 }}
+                >
+                  Type
+                </Typography>
+                <RadioGroup
+                  row
+                  name="type"
+                  value={dishForm.type}
+                  onChange={handleDishChange}
+                >
+                  <FormControlLabel
+                    value="meat"
+                    control={<Radio />}
+                    label="Meat"
+                  />
+                  <FormControlLabel
+                    value="vegetarian"
+                    control={<Radio />}
+                    label="Vegetarian"
+                  />
+                  <FormControlLabel
+                    value="vegan"
+                    control={<Radio />}
+                    label="Vegan"
+                  />
+                </RadioGroup>
+              </Box>
 
-        <Divider />
+              <TextField
+                label="Allergens"
+                name="allergens"
+                value={dishForm.allergens}
+                onChange={handleDishChange}
+                placeholder="Nuts, dairy"
+              />
 
-        <Typography variant="h6">Dishes</Typography>
-        {dishes.length === 0 && (
-          <Typography variant="body2">No dishes added.</Typography>
-        )}
-        {dishes.map((dish) => (
-          <Box key={dish.clientId} sx={{ border: "1px solid #ccc", p: 2 }}>
-            <Typography fontWeight="bold">
-              {dish.name} - {dish.type}
-            </Typography>
-            <Typography>{dish.details}</Typography>
-            <Typography>Allergens: {dish.allergens}</Typography>
-          </Box>
-        ))}
+              <Button
+                variant="outlined"
+                onClick={handleAddDish}
+                disabled={!dishForm.name.trim()}
+                sx={{ alignSelf: "flex-start" }}
+              >
+                Add dish
+              </Button>
 
-        <Box display="flex" justifyContent="space-between">
-          <Button onClick={() => setStep(2)} disabled={isSubmitting}>
-            Back
-          </Button>
-          <Button
-            variant="contained"
-            color="success"
-            onClick={handleFinalize}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Saving..." : "Finalize"}
-          </Button>
-        </Box>
-      </Box>
-    );
-  }
+              <Divider />
 
-  return null;
+              <Typography variant="body2" color="text.secondary">
+                {dishes.length === 0
+                  ? "No dishes added yet."
+                  : `${dishes.length} dish${dishes.length > 1 ? "es" : ""} added`}
+              </Typography>
+
+              {dishes.map((dish) => (
+                <Box
+                  key={dish.clientId}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 1,
+                    py: 1.25,
+                    borderBottom: "1px solid",
+                    borderColor: "divider",
+                  }}
+                >
+                  <Box>
+                    <Box
+                      sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                    >
+                      <Typography fontWeight={600}>{dish.name}</Typography>
+                      <DishTypeChip type={dish.type} />
+                    </Box>
+                    {dish.allergens && (
+                      <Typography variant="body2" color="text.secondary">
+                        Allergens: {dish.allergens}
+                      </Typography>
+                    )}
+                  </Box>
+                  <IconButton
+                    size="small"
+                    aria-label={`Remove ${dish.name}`}
+                    onClick={() => handleRemoveDish(dish.clientId)}
+                    sx={{ color: "text.secondary" }}
+                  >
+                    <DeleteOutlineRoundedIcon fontSize="small" />
+                  </IconButton>
+                </Box>
+              ))}
+
+              <Box display="flex" justifyContent="space-between" mt={1}>
+                <Button onClick={() => setStep(1)}>Back</Button>
+                <Button variant="contained" onClick={() => setStep(3)}>
+                  Review
+                </Button>
+              </Box>
+            </Box>
+          )}
+
+          {step === 3 && (
+            <Box display="flex" flexDirection="column" gap={1.5}>
+              <Typography variant="h4">{form.title}</Typography>
+              <Typography color="text.secondary">
+                {form.date || "Date to be decided"}
+                {form.location ? ` · ${form.location}` : ""}
+              </Typography>
+              {form.description && (
+                <Typography sx={{ mt: 1 }}>{form.description}</Typography>
+              )}
+
+              <Divider sx={{ my: 2 }} />
+
+              <Typography variant="h6" sx={{ mb: 1 }}>
+                Dishes
+              </Typography>
+              {dishes.length === 0 && (
+                <Typography variant="body2" color="text.secondary">
+                  No dishes added.
+                </Typography>
+              )}
+              {dishes.map((dish) => (
+                <Box
+                  key={dish.clientId}
+                  sx={{
+                    py: 1.25,
+                    borderBottom: "1px solid",
+                    borderColor: "divider",
+                  }}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <Typography fontWeight={600}>{dish.name}</Typography>
+                    <DishTypeChip type={dish.type} />
+                  </Box>
+                  {dish.details && (
+                    <Typography variant="body2" color="text.secondary">
+                      {dish.details}
+                    </Typography>
+                  )}
+                  {dish.allergens && (
+                    <Typography variant="body2" color="text.secondary">
+                      Allergens: {dish.allergens}
+                    </Typography>
+                  )}
+                </Box>
+              ))}
+
+              <Box display="flex" justifyContent="space-between" mt={3}>
+                <Button onClick={() => setStep(2)} disabled={isSubmitting}>
+                  Back
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleFinalize}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Saving..." : "Create potluck"}
+                </Button>
+              </Box>
+            </Box>
+          )}
+        </CardContent>
+      </Card>
+    </Box>
+  );
 }
